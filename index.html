@@ -1,0 +1,1003 @@
+
+<style>
+@font-face {
+  font-family: 'Countryside';
+  src: url('font/Countryside Personal Use.ttf') format('truetype');
+  font-display: swap;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--m:#2D6A4F;--mb:rgba(45,106,79,.08);--p:#2D6A4F;--pb:rgba(45,106,79,.08);--c:#2D6A4F;--cb:rgba(45,106,79,.08);--a:#013E37;--ab:rgba(1,62,55,.1);--g:#4ade80;--r:16px;--gap:18px;--color-background-primary:#eaf4f0;--color-background-secondary:rgba(1,62,55,0.06);--color-text-primary:#013E37;--color-text-secondary:rgba(1,62,55,0.65);--color-border-tertiary:rgba(1,62,55,0.12);--color-border-secondary:rgba(1,62,55,0.2)}
+body{background:var(--color-background-primary);color:var(--color-text-primary);transition:background .3s,color .3s}
+#app{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;font-size:17px;color:var(--color-text-primary);padding:28px;min-height:400px;opacity:0;pointer-events:none;transition:opacity 0.5s ease}
+.icon-s{width:18px;height:18px;vertical-align:middle;margin-right:8px;stroke-width:2;stroke:currentColor;fill:none}
+.stat-icon{width:16px;height:16px;vertical-align:middle;margin-left:2px}
+.card{background:rgba(1,62,55,0.04);border:2.5px solid var(--a);border-radius:var(--r);padding:20px 24px}
+.tab-bar{display:flex;gap:var(--gap);background:transparent;border:none;border-radius:0;padding:0;margin-bottom:20px}
+.tab-btn{flex:1;padding:16px 10px;border:2.5px solid var(--a);border-radius:var(--r);cursor:pointer;font-size:16px;font-weight:600;background:rgba(1,62,55,0.04);color:var(--color-text-primary);transition:all .15s;font-family:inherit;display:flex;align-items:center;justify-content:center;position:relative}
+.tab-btn.active{background:var(--a);color:#fff}
+.tab-btn.active .icon-s{stroke:#fff}
+.tab-btn:hover:not(.active){background:var(--color-background-secondary)}
+.heat-cell{width:36px;height:36px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;cursor:default;border:2px solid transparent;transition:all .15s ease-out;font-weight:600;position:relative}
+.heat-cell:hover{transform:translateY(-2px);border-color:var(--a);z-index:10;box-shadow:0 4px 12px rgba(1,62,55,0.15)}
+.heat-cell::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%) translateY(5px);background:var(--color-text-primary);color:#fff;padding:6px 10px;border-radius:6px;font-size:10px;white-space:nowrap;opacity:0;pointer-events:none;transition:all .2s;z-index:100;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+.heat-cell:hover::after{opacity:1;transform:translateX(-50%) translateY(0)}
+.topic-row{display:flex;align-items:center;gap:9px;padding:9px 11px;border:.5px solid var(--color-border-tertiary);border-radius:9px;margin-bottom:5px;transition:background .15s}
+.chk{width:19px;height:19px;border-radius:5px;border:1.5px solid var(--color-border-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.tag-btn{padding:3px 8px;border-radius:6px;border:.5px solid var(--color-border-tertiary);background:transparent;font-size:11px;cursor:pointer;font-family:inherit;transition:all .15s;color:var(--color-text-secondary);flex-shrink:0}
+.tag-btn.weak.on{background:rgba(251,113,133,.15);border-color:var(--c);color:var(--c)}
+.tag-btn.rev.on{background:rgba(245,158,11,.15);border-color:var(--m);color:var(--m)}
+.score-in{background:var(--color-background-secondary);border:.5px solid var(--color-border-tertiary);border-radius:8px;padding:8px;color:var(--color-text-primary);font-family:inherit;font-size:18px;font-weight:500;width:100%;outline:none;text-align:center;transition:border-color .15s}
+.score-in:focus{border-color:var(--a)}
+.mock-row{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--color-background-secondary);border-radius:10px;margin-bottom:6px;font-size:15px;color:var(--color-text-primary)}
+.s-tab{flex:1;padding:12px 6px;border:.5px solid var(--color-border-tertiary);border-radius:10px;cursor:pointer;background:var(--color-background-secondary);text-align:center;transition:all .15s;font-size:16px;font-weight:600;color:var(--color-text-secondary)}
+.stat-m{text-align:center;padding:10px;background:var(--color-background-secondary);border-radius:10px;min-width:100px}
+.stat-m .v{font-size:18px;font-weight:500;line-height:1.2}
+.stat-m .l{font-size:10px;color:var(--color-text-secondary);margin-top:2px}
+.ring-w{position:relative;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.ring-w .rl{position:absolute;font-size:10px;font-weight:500;text-align:center}
+.add-btn{background:var(--a);border:1.5px solid var(--a);border-radius:9px;color:#fff;padding:10px 20px;font-family:inherit;font-weight:600;font-size:14px;cursor:pointer;transition:all .15s;white-space:nowrap}
+.add-btn:hover{background:var(--ab);color:var(--a)}
+.del-btn{background:none;border:none;color:var(--color-text-secondary);cursor:pointer;font-size:14px;padding:4px 8px;border-radius:6px;opacity:.4;transition:all .15s}
+.del-btn:hover{opacity:1;background:rgba(251,113,133,.1);color:#fb7185}
+.pill{display:inline-block;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:500}
+@keyframes saveflash{0%{opacity:1}80%{opacity:1}100%{opacity:0}}
+.sv{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--g);animation:saveflash .7s forwards;vertical-align:middle;margin-left:4px}
+#chart-canvas{width:100%!important;height:160px!important}
+
+/* Intro Overlay Styles */
+#intro-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #013E37;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.5s ease;
+}
+#intro-text-container {
+  font-family: 'Countryside', cursive, 'Syne', sans-serif; /* fallback to Syne */
+  font-weight: 800;
+  font-size: clamp(3rem, 8vw, 7rem);
+  color: #FFEFB3;
+  letter-spacing: 0.02em;
+  display: flex;
+  align-items: center;
+  transition: opacity 0.6s ease;
+}
+#intro-cursor {
+  color: inherit;
+  animation: blink 1s step-end infinite;
+  margin-left: 4px;
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+  #dashboard-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(234, 244, 240, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 9000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, visibility 0.4s;
+}
+.loader-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+.loader-logo {
+  font-family: 'Countryside', cursive;
+  font-size: 48px;
+  color: var(--a);
+  margin-bottom: 8px;
+}
+.loader-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid var(--mb);
+  border-top: 4px solid var(--a);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+.loader-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.loader-bar-w {
+  width: 200px;
+  height: 4px;
+  background: var(--mb);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+.loader-bar-f {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: var(--a);
+  width: 0%;
+  transition: width 0.3s ease;
+}
+/* Auth Overlay Styles */
+#auth-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--color-background-primary);
+  z-index: 8000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.auth-card {
+  background: #fff;
+  padding: 40px;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 10px 30px rgba(1, 62, 55, 0.08);
+  border: 1px solid var(--color-border-tertiary);
+  text-align: center;
+}
+.auth-title {
+  font-family: 'Countryside', cursive;
+  font-size: 32px;
+  color: var(--color-text-primary);
+  margin-bottom: 24px;
+}
+.auth-input {
+  width: 100%;
+  padding: 14px;
+  border: 1.5px solid var(--color-border-secondary);
+  border-radius: 10px;
+  margin-bottom: 12px;
+  font-family: inherit;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.auth-input:focus {
+  border-color: var(--a);
+}
+.auth-btn {
+  width: 100%;
+  background: var(--a);
+  color: #fff;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: opacity 0.2s;
+}
+.auth-btn:hover {
+  opacity: 0.9;
+}
+.auth-switch {
+  margin-top: 20px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+.auth-switch a {
+  color: var(--a);
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+.auth-error {
+  color: #e53e3e;
+  font-size: 13px;
+  margin-top: 10px;
+  display: none;
+}
+#user-menu {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.profile-trigger {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--a);
+  border: 2px solid var(--a);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(1, 62, 55, 0.15);
+}
+.profile-trigger:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(1, 62, 55, 0.2);
+}
+.profile-dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 200px;
+  background: #fff;
+  border: 1px solid var(--color-border-tertiary);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 10px 30px rgba(1, 62, 55, 0.12);
+  display: none;
+  z-index: 1000;
+  transform-origin: top right;
+  animation: slideDown 0.2s ease-out;
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+#user-menu:hover .profile-dropdown {
+  display: block;
+}
+.dropdown-user-info {
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border-tertiary);
+}
+.dropdown-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary);
+  margin-bottom: 4px;
+}
+.dropdown-value {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.logout-btn {
+  width: 100%;
+  background: rgba(229, 62, 62, 0.05);
+  border: 1px solid rgba(229, 62, 62, 0.2);
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #e53e3e;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.logout-btn:hover {
+  background: #e53e3e;
+  color: #fff;
+  border-color: #e53e3e;
+}
+</style>
+
+<div id="intro-overlay">
+  <div id="intro-text-container">
+    <span id="intro-text"></span><span id="intro-cursor">|</span>
+  </div>
+</div>
+
+<div id="dashboard-loader">
+  <div class="loader-content">
+    <div class="loader-logo">JEE Sprint</div>
+    <div class="loader-spinner"></div>
+    <div class="loader-text" id="loader-msg">Preparing your workspace</div>
+    <div class="loader-bar-w"><div class="loader-bar-f" id="loader-progress"></div></div>
+  </div>
+</div>
+
+<div id="auth-overlay">
+  <div class="auth-card">
+    <div class="auth-title">JEE Sprint</div>
+    <div id="auth-mode-title" style="font-size: 18px; font-weight: 600; margin-bottom: 20px;">Welcome Back</div>
+    <div id="auth-error" class="auth-error"></div>
+    <form id="auth-form">
+      <input type="text" id="auth-username" class="auth-input" placeholder="Username / ID" required>
+      <input type="password" id="auth-password" class="auth-input" placeholder="Password" required>
+      <button type="submit" id="auth-submit-btn" class="auth-btn">Log In</button>
+    </form>
+    <div class="auth-switch" id="auth-footer" style="margin-top: 20px; font-size: 13px; color: var(--color-text-secondary); opacity: 0.8;">
+      Contact admin for account access
+    </div>
+  </div>
+</div>
+
+<div id="app">
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px;padding-top:24px">
+    <div>
+      <div style="font-family:'Countryside', cursive;font-size:32px;font-weight:600;line-height:1.2;color:var(--color-text-primary);margin-bottom:4px;padding-left:12px">Hello, <span id="user-display-name">Guest</span> <span id="si"></span></div>
+    </div>
+    <div style="display:flex;gap:7px;align-items:center">
+      <div class="stat-m"><div class="v" id="dl" style="color:var(--m)">–</div><div class="l">Days left</div></div>
+      <div class="stat-m"><div class="v" id="op" style="color:var(--a)">0%</div><div class="l">Coverage</div></div>
+      <div id="user-menu" style="display: none;">
+        <div class="profile-trigger">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        </div>
+        <div class="profile-dropdown">
+          <div class="dropdown-user-info">
+            <div class="dropdown-label">Logged in as</div>
+            <div id="dropdown-username" class="dropdown-value">---</div>
+          </div>
+          <button id="logout-btn" class="logout-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" data-tab="ov"><svg class="icon-s" viewBox="0 0 24 24" stroke="currentColor"><path d="M3 3v18h18M7 12l4-4 4 4 4-4"/></svg>Overview</button>
+    <button class="tab-btn" data-tab="sy"><svg class="icon-s" viewBox="0 0 24 24" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 4.5A2.5 2.5 0 0 1 6.5 7H20M6.5 17V7"/><path d="M6.5 17H20M6.5 7H20"/></svg>Syllabus</button>
+    <button class="tab-btn" data-tab="mk"><svg class="icon-s" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>Mock Tests</button>
+  </div>
+
+  <div id="pov">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap);margin-bottom:var(--gap)">
+      <div class="card" style="min-height:130px;padding:24px 24px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div><div style="font-size:18px;color:rgba(45,106,79,0.7);margin-bottom:4px;font-weight:500">Mathematics</div><div style="font-size:3.2rem;font-weight:700;color:var(--m);line-height:1.1" id="pm">0%</div><div style="font-size:13px;color:var(--color-text-secondary)" id="dm">0/14 topics</div></div>
+          <div class="ring-w"><svg width="56" height="56"><circle cx="28" cy="28" r="22" fill="none" stroke="var(--mb)" stroke-width="5"/><circle id="rm" cx="28" cy="28" r="22" fill="none" stroke="var(--m)" stroke-width="5" stroke-dasharray="138.2" stroke-dashoffset="138.2" stroke-linecap="round" transform="rotate(-90 28 28)" style="transition:stroke-dashoffset .8s ease"/></svg><div class="rl" style="color:var(--m);font-size:15px;font-weight:600" id="rml">0%</div></div>
+        </div><div class="prog-bar" style="margin-top:18px"><div class="prog-fill" id="bm" style="background:var(--m);width:0"></div></div>
+      </div>
+      <div class="card" style="min-height:130px;padding:24px 24px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div><div style="font-size:18px;color:rgba(45,106,79,0.7);margin-bottom:4px;font-weight:500">Physics</div><div style="font-size:3.2rem;font-weight:700;color:var(--p);line-height:1.1" id="pp">0%</div><div style="font-size:13px;color:var(--color-text-secondary)" id="dp">0/20 topics</div></div>
+          <div class="ring-w"><svg width="56" height="56"><circle cx="28" cy="28" r="22" fill="none" stroke="var(--pb)" stroke-width="5"/><circle id="rp" cx="28" cy="28" r="22" fill="none" stroke="var(--p)" stroke-width="5" stroke-dasharray="138.2" stroke-dashoffset="138.2" stroke-linecap="round" transform="rotate(-90 28 28)" style="transition:stroke-dashoffset .8s ease"/></svg><div class="rl" style="color:var(--p);font-size:15px;font-weight:600" id="rpl">0%</div></div>
+        </div><div class="prog-bar" style="margin-top:18px"><div class="prog-fill" id="bp" style="background:var(--p);width:0"></div></div>
+      </div>
+      <div class="card" style="min-height:130px;padding:24px 24px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div><div style="font-size:18px;color:rgba(45,106,79,0.7);margin-bottom:4px;font-weight:500">Chemistry</div><div style="font-size:3.2rem;font-weight:700;color:var(--c);line-height:1.1" id="pc">0%</div><div style="font-size:13px;color:var(--color-text-secondary)" id="dc">0/20 topics</div></div>
+          <div class="ring-w"><svg width="56" height="56"><circle cx="28" cy="28" r="22" fill="none" stroke="var(--cb)" stroke-width="5"/><circle id="rc" cx="28" cy="28" r="22" fill="none" stroke="var(--c)" stroke-width="5" stroke-dasharray="138.2" stroke-dashoffset="138.2" stroke-linecap="round" transform="rotate(-90 28 28)" style="transition:stroke-dashoffset .8s ease"/></svg><div class="rl" style="color:var(--c);font-size:15px;font-weight:600" id="rcl">0%</div></div>
+        </div><div class="prog-bar" style="margin-top:18px"><div class="prog-fill" id="bc" style="background:var(--c);width:0"></div></div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:380px 1fr;gap:var(--gap);margin-bottom:var(--gap)">
+      <div class="card" style="padding:24px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <div style="font-size:15px;font-weight:500"><svg class="icon-s" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>Questions Solved Today</div>
+        </div>
+        <div id="hsl" style="display:flex;flex-direction:column;gap:12px"></div>
+      </div>
+      <div class="card" style="padding:24px">
+        <div style="font-size:15px;font-weight:500;margin-bottom:11px"><svg class="icon-s" viewBox="0 0 24 24" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>25-Day Activity Map</div>
+        <div id="hmap" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+        <div style="display:flex;gap:7px;align-items:center;margin-top:16px;font-size:12px;color:var(--color-text-secondary)">
+          <span>Less</span>
+          <div style="width:16px;height:16px;border-radius:4px;background:var(--color-background-secondary);border:.5px solid var(--color-border-tertiary)"></div>
+          <div style="width:16px;height:16px;border-radius:4px;background:rgba(1,62,55,.1)"></div>
+          <div style="width:16px;height:16px;border-radius:4px;background:rgba(1,62,55,.3)"></div>
+          <div style="width:16px;height:16px;border-radius:4px;background:rgba(1,62,55,.5)"></div>
+          <div style="width:16px;height:16px;border-radius:4px;background:var(--a)"></div>
+          <span>More</span>
+          <span style="margin-left:8px;font-size:9px;opacity:.7">Hover cells for date details</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="psy" style="display:none">
+    <div style="display:flex;gap:8px;margin-bottom:12px" id="stabs">
+      <div class="s-tab" data-s="math" style="border-color:var(--m);color:var(--m);background:var(--mb)">Mathematics<div id="smp" style="font-size:11px;margin-top:2px;font-weight:400;opacity:.8">0/14</div></div>
+      <div class="s-tab" data-s="phys">Physics<div id="spp" style="font-size:11px;margin-top:2px;font-weight:400;opacity:.8">0/20</div></div>
+      <div class="s-tab" data-s="chem">Chemistry<div id="scp" style="font-size:11px;margin-top:2px;font-weight:400;opacity:.8">0/20</div></div>
+    </div>
+    <div id="tlist"></div>
+  </div>
+
+  <div id="pmk" style="display:none">
+    <div class="card" style="margin-bottom:var(--gap)">
+      <div style="font-size:13px;font-weight:500;margin-bottom:12px">Log Mock Test Score</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px">
+        <div style="background:var(--mb);border-radius:9px;padding:12px;text-align:center">
+          <div style="font-size:14px;color:rgba(45,106,79,0.7);margin-bottom:8px;font-weight:500">Mathematics <span style="opacity:.6;font-size:11px">/100</span></div>
+          <input type="number" id="im" class="score-in" style="border-color:var(--m);color:var(--m)" min="0" max="100" placeholder="–">
+        </div>
+        <div style="background:var(--pb);border-radius:9px;padding:12px;text-align:center">
+          <div style="font-size:14px;color:rgba(45,106,79,0.7);margin-bottom:8px;font-weight:500">Physics <span style="opacity:.6;font-size:11px">/100</span></div>
+          <input type="number" id="ip" class="score-in" style="border-color:var(--p);color:var(--p)" min="0" max="100" placeholder="–">
+        </div>
+        <div style="background:var(--cb);border-radius:9px;padding:12px;text-align:center">
+          <div style="font-size:14px;color:rgba(45,106,79,0.7);margin-bottom:8px;font-weight:500">Chemistry <span style="opacity:.6;font-size:11px">/100</span></div>
+          <input type="number" id="ic" class="score-in" style="border-color:var(--c);color:var(--c)" min="0" max="100" placeholder="–">
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="font-size:13px;color:var(--color-text-secondary)">Total: <strong style="color:var(--a);font-size:16px" id="tp">0</strong><span style="color:var(--color-text-secondary)">/300</span></div>
+        <button class="add-btn" id="amb">Save Test</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:var(--gap)">
+      <div class="stat-m"><div class="v" id="mc1" style="color:var(--a)">0</div><div class="l">Tests taken</div></div>
+      <div class="stat-m"><div class="v" id="mc2" style="color:var(--m)">–</div><div class="l">Avg score</div></div>
+      <div class="stat-m"><div class="v" id="mc3" style="color:var(--m)">–</div><div class="l">Best score</div></div>
+      <div class="stat-m"><div class="v" id="mc4" style="color:var(--m)">–</div><div class="l">Last score</div></div>
+    </div>
+    <div class="card" id="chartc" style="margin-bottom:var(--gap);display:none">
+      <div style="font-size:13px;font-weight:500;margin-bottom:10px"><svg class="icon-s" viewBox="0 0 24 24" stroke="currentColor"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Score Progression</div>
+      <canvas id="chart-canvas"></canvas>
+      <div style="display:flex;gap:12px;margin-top:8px;justify-content:center;font-size:11px;color:var(--color-text-secondary)">
+        <span><span style="display:inline-block;width:14px;height:2px;background:var(--a);vertical-align:middle;margin-right:3px"></span>Total</span>
+        <span><span style="display:inline-block;width:14px;height:2px;background:var(--m);vertical-align:middle;margin-right:3px"></span>Math</span>
+        <span><span style="display:inline-block;width:14px;height:2px;background:var(--p);vertical-align:middle;margin-right:3px"></span>Physics</span>
+        <span><span style="display:inline-block;width:14px;height:2px;background:var(--c);vertical-align:middle;margin-right:3px"></span>Chemistry</span>
+      </div>
+    </div>
+    <div class="card">
+      <div style="font-size:13px;font-weight:500;margin-bottom:10px"><svg class="icon-s" viewBox="0 0 24 24" stroke="currentColor"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>Test History</div>
+      <div id="mhist"></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js" onload="appReady()"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://aogfbetxmzsjjdhbured.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFvZ2ZiZXR4bXpzampkaGJ1cmVkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1MTQyNDgsImV4cCI6MjA4OTA5MDI0OH0.OedI5IJQuUT-qB4INo2EH2yALrkoF3xqRMviMi9ESnM';
+let _supabaseCache = null;
+function getSupabase() {
+  if (_supabaseCache) return _supabaseCache;
+  try {
+    const lib = window.supabase || (typeof supabase !== 'undefined' ? supabase : null);
+    if (lib && lib.createClient) {
+      _supabaseCache = lib.createClient(SUPABASE_URL, SUPABASE_KEY);
+    }
+  } catch (e) { console.error('Supabase init failed', e); }
+  return _supabaseCache;
+}
+
+const SYL = {
+  math:["Sets, Relations & Functions","Complex Numbers & Quadratic Equations","Matrices & Determinants","Permutations & Combinations","Binomial Theorem","Sequences & Series","Limits, Continuity & Differentiability","Integral Calculus","Differential Equations","Coordinate Geometry","3D Geometry","Vector Algebra","Statistics & Probability","Trigonometry"].map((n,i)=>({id:`m${i+1}`,n})),
+  phys:["Units & Measurements","Kinematics","Laws of Motion","Work, Energy & Power","Rotational Motion","Gravitation","Properties of Solids & Liquids","Thermodynamics","Kinetic Theory of Gases","Oscillations & Waves","Electrostatics","Current Electricity","Magnetic Effects & Magnetism","Electromagnetic Induction & AC","Electromagnetic Waves","Optics","Dual Nature of Matter","Atoms & Nuclei","Electronic Devices","Experimental Skills"].map((n,i)=>({id:`p${i+1}`,n})),
+  chem:["Basic Concepts in Chemistry","Atomic Structure","Chemical Bonding & Molecular Structure","Chemical Thermodynamics","Solutions","Equilibrium","Redox Reactions & Electrochemistry","Chemical Kinetics","Classification of Elements","p-Block Elements","d & f-Block Elements","Coordination Compounds","Purification of Organic Compounds","Basic Principles of Organic Chemistry","Hydrocarbons","Organic Compounds with Halogens","Organic Compounds with Oxygen","Organic Compounds with Nitrogen","Biomolecules","Practical Chemistry"].map((n,i)=>({id:`c${i+1}`,n}))
+};
+const TOT={math:14,phys:20,chem:20};
+const COLORS={math:'#2D6A4F',phys:'#2D6A4F',chem:'#2D6A4F'};
+const QUOTES=["Every expert was once a beginner. Keep going! 🌟","25 days of pure focus can rewrite your entire story. 💫","The pain of discipline is far less than the pain of regret. 🔥","You've survived 100% of your hard days so far. 💪","One topic at a time. One day at a time. You've got this. 🎯","Champions are made in the quiet hours nobody sees. ⚡","Study hard. Stay consistent. Trust the process. 🚀"];
+
+let S={done:new Set(),tags:{},hours:{},mocks:[]};
+let atab='ov', asub='math', mchart=null;
+const tk=()=>new Date().toISOString().split('T')[0];
+let isLoaded = false;
+let isInit = false;
+let isIntroRun = false;
+let saveTimer = null;
+let currentUsername = null;
+let currentStorageKey = null;
+
+async function checkUser() {
+  const savedUser = sessionStorage.getItem('jee_user');
+  if (savedUser) {
+    updateAuthState(savedUser);
+  } else {
+    updateAuthState(null);
+  }
+}
+
+async function updateAuthState(username) {
+  const authOverlay = document.getElementById('auth-overlay');
+  const app = document.getElementById('app');
+  const userDisplayName = document.getElementById('user-display-name');
+  const userMenu = document.getElementById('user-menu');
+  const dropdownUsername = document.getElementById('dropdown-username');
+
+  if (username) {
+    currentUsername = username;
+    // Premium transition to loader
+    gsap.to(authOverlay, { opacity: 0, duration: 0.4, onComplete: () => {
+      authOverlay.style.display = 'none';
+      app.style.display = 'block';
+      if (userMenu) userMenu.style.display = 'flex';
+      if (userDisplayName) userDisplayName.textContent = username;
+      if (dropdownUsername) dropdownUsername.textContent = username;
+      load();
+    }});
+  } else {
+    currentUsername = null;
+    authOverlay.style.display = 'flex';
+    authOverlay.style.opacity = '1';
+    app.style.display = 'none';
+    if (userMenu) userMenu.style.display = 'none';
+  }
+}
+
+// Auth Form Handler
+const authForm = document.getElementById('auth-form');
+if (authForm) {
+  authForm.onsubmit = async (e) => {
+    e.preventDefault();
+    const username = document.getElementById('auth-username').value.trim();
+    const password = document.getElementById('auth-password').value;
+    const errorEl = document.getElementById('auth-error');
+    const sb = getSupabase();
+
+    errorEl.style.display = 'none';
+    try {
+      const { data, error } = await sb
+        .from('users')
+        .select('*')
+        .eq('username', username)
+        .eq('password', password)
+        .single();
+
+      if (error || !data) {
+        throw new Error('Invalid username or password');
+      }
+
+      sessionStorage.setItem('jee_user', username);
+      updateAuthState(username);
+    } catch (err) {
+      errorEl.textContent = err.message;
+      errorEl.style.display = 'block';
+    }
+  };
+}
+
+// Logout Handler
+const logoutBtn = document.getElementById('logout-btn');
+if (logoutBtn) {
+  logoutBtn.onclick = () => {
+    sessionStorage.removeItem('jee_user');
+    updateAuthState(null);
+  };
+}
+function getDynamicStorageKey() {
+  if (currentUsername) {
+    return `jee-sprint-v2-${currentUsername}`;
+  }
+  return `jee-sprint-v2-unknown`;
+}
+
+function animEnt(){
+  gsap.from(".card", {y: 30, opacity:0, duration: 0.8, stagger: 0.1, ease: "power2.out"});
+  gsap.from(".tab-btn", {y: -20, opacity:0, duration: 0.6, stagger: 0.1, ease: "back.out(1.7)"});
+  gsap.from(".header-stats > div", {x: -20, opacity:0, duration: 0.6, stagger: 0.1, ease: "power2.out"});
+}
+
+function animNum(id, val){
+  const el = document.getElementById(id);
+  if(!el) return;
+  const curr = parseFloat(el.textContent) || 0;
+  const obj = {n: curr};
+  gsap.to(obj, {n: val, duration: 1.2, ease: "power2.out", onUpdate: () => {
+    el.textContent = Math.round(obj.n) + (id.startsWith('p') ? '%' : '');
+  }});
+}
+
+
+
+function runIntro() {
+  if (isIntroRun) return;
+  isIntroRun = true;
+  const overlay = document.getElementById('intro-overlay');
+  const textEl = document.getElementById('intro-text');
+  const container = document.getElementById('intro-text-container');
+  const app = document.getElementById('app');
+  
+  if (!overlay || !textEl || !container || !app) {
+    init();
+    return;
+  }
+
+  const textToType = "You can do it....";
+  let charIndex = 0;
+
+  // 1. Initial pause of 0.4s
+  setTimeout(() => {
+    // 2. Type characters every 80ms
+    const typeInterval = setInterval(() => {
+      if (charIndex < textToType.length) {
+        textEl.textContent += textToType.charAt(charIndex);
+        charIndex++;
+      } else {
+        clearInterval(typeInterval);
+        // 3. Keep cursor visible for 1.2s after typing finishes
+        setTimeout(() => {
+          // 4. Fade out text with 0.6s fade
+          container.style.opacity = '0';
+          
+          setTimeout(() => {
+            // 5. Fade out overlay
+            overlay.style.opacity = '0';
+            // Show the standard app
+            app.style.opacity = '1';
+            app.style.pointerEvents = 'auto';
+            
+            // 6. Remove overlay from DOM
+            setTimeout(() => {
+              overlay.remove();
+              init(); // initialize the app data now
+            }, 500); // Wait for overlay fade out
+          }, 600); // Wait for text fade out
+        }, 1200); 
+      }
+    }, 80);
+  }, 400);
+}
+
+async function load() {
+  const loader = document.getElementById('dashboard-loader');
+  const progress = document.getElementById('loader-progress');
+  const msg = document.getElementById('loader-msg');
+  
+  if (loader) {
+    loader.style.visibility = 'visible';
+    gsap.to(loader, { opacity: 1, duration: 0.4 });
+  }
+
+  const updateProgress = (p, text) => {
+    if (progress) gsap.to(progress, { width: p + '%', duration: 0.4 });
+    if (msg) msg.textContent = text;
+  };
+
+  try {
+    updateProgress(20, 'Connecting to Supabase...');
+    const sb = getSupabase();
+    let supabaseData = null;
+
+    if (sb) {
+      updateProgress(40, 'Syncing cloud data...');
+      const { data, error } = await sb
+        .from('user_data_v2')
+        .select('payload')
+        .eq('id', currentUsername)
+        .single();
+      
+      if (error && error.code !== 'PGRST116') { 
+        console.error('Supabase fetch error:', error);
+      }
+      
+      if (!error && data && data.payload && Object.keys(data.payload).length > 0) {
+        supabaseData = data.payload;
+      }
+    }
+
+    updateProgress(70, 'Loading local preference...');
+    currentStorageKey = getDynamicStorageKey();
+    const localRaw = localStorage.getItem(currentStorageKey);
+    
+    let localData = null;
+    if (localRaw) {
+      const d = JSON.parse(localRaw);
+      localData = {
+        done: new Set(d.done || []),
+        tags: d.tags || {},
+        hours: d.hours || {},
+        mocks: d.mocks || []
+      };
+    }
+
+    updateProgress(90, 'Finalizing dashboard...');
+    if (supabaseData) {
+      S.done = new Set(supabaseData.done || []);
+      S.tags = supabaseData.tags || {};
+      S.hours = supabaseData.hours || {};
+      S.mocks = supabaseData.mocks || [];
+    } else if (localData) {
+      S = localData;
+    }
+
+  } catch (e) {
+    console.error('Core load error:', e);
+  } finally {
+    updateProgress(100, 'Welcome back!');
+    setTimeout(() => {
+      if (loader) {
+        gsap.to(loader, { opacity: 0, duration: 0.6, onComplete: () => {
+          loader.style.visibility = 'hidden';
+          // Dashboard reveal animation
+          gsap.fromTo("#app", 
+            { y: 20, opacity: 0 }, 
+            { y: 0, opacity: 1, duration: 0.8, ease: "power2.out", onComplete: () => {
+              app.style.pointerEvents = 'auto';
+            }}
+          );
+        }});
+      }
+      render();
+      isLoaded = true;
+      console.log('App ready and loaded.');
+    }, 600);
+  }
+}
+
+
+async function save(force = false) {
+  if (!isLoaded) return;
+  clearTimeout(saveTimer);
+  
+  const performSave = async () => {
+    try {
+      const si = document.getElementById('si');
+      if (si) {
+        si.innerHTML = '<span class="sv"></span>';
+        setTimeout(() => { if(si) si.innerHTML = ''; }, 800);
+      }
+
+      const payload = {
+        done: [...S.done],
+        tags: S.tags,
+        hours: S.hours,
+        mocks: S.mocks
+      };
+
+      // Save to LocalStorage (user-specific local backup)
+      currentStorageKey = getDynamicStorageKey();
+      localStorage.setItem(currentStorageKey, JSON.stringify(payload));
+
+      // Save to Supabase
+      const sb = getSupabase();
+      if (sb && currentUsername) {
+        const { error } = await sb
+          .from('user_data_v2')
+          .upsert({ id: currentUsername, payload: payload, updated_at: new Date().toISOString() });
+        
+        if (error) console.error('Supabase save error:', error);
+      }
+    } catch (e) {
+      console.error('Save failed:', e);
+    }
+  };
+
+  if (force) {
+    await performSave();
+  } else {
+    saveTimer = setTimeout(performSave, 800);
+  }
+}
+
+function getCov(s){const t=SYL[s];const d=t.filter(x=>S.done.has(x.id)).length;return{done:d,total:TOT[s],pct:Math.round(d/TOT[s]*100)};}
+function getStreak(){let s=0;const d=new Date();while(true){const k=d.toISOString().split('T')[0];const h=S.hours[k]||{};if((h.math||0)+(h.phys||0)+(h.chem||0)>0){s++;d.setDate(d.getDate()-1);}else break;}return s;}
+function getDL(){return Math.max(0,Math.ceil((new Date('2026-04-09')-new Date())/86400000));}
+
+function updAll(){
+  try {
+    const mc=getCov('math'),pc=getCov('phys'),cc=getCov('chem');
+    const op=Math.round((mc.done+pc.done+cc.done)/54*100);
+    const h=S.hours[tk()]||{};
+    const tot=((h.math||0)+(h.phys||0)+(h.chem||0));
+    
+    // 1. Header Stats
+    const dlEl=document.getElementById('dl'),opEl=document.getElementById('op');
+    if(dlEl) dlEl.textContent=getDL();
+    if(opEl) opEl.textContent=op+'%';
+
+    // 2. Overview Cards
+    const C=138.2;
+    [['m',mc],['p',pc],['c',cc]].forEach(([k,cov])=>{
+      const pEl=document.getElementById('p'+k),dEl=document.getElementById('d'+k),rlEl=document.getElementById('r'+k+'l'),bEl=document.getElementById('b'+k),rEl=document.getElementById('r'+k);
+      if(pEl) animNum('p'+k, cov.pct);
+      if(dEl) dEl.textContent=cov.done+'/'+cov.total+' topics';
+      if(rlEl) rlEl.textContent=cov.pct+'%';
+      if(bEl) gsap.to(bEl, {width: cov.pct+'%', duration: 1, ease: "power2.out"});
+      if(rEl) gsap.to(rEl, {strokeDashoffset: C-(cov.pct/100)*C, duration: 1, ease: "power2.out"});
+    });
+
+    // 3. Syllabus Tabs
+    [['math','smp'],['phys','spp'],['chem','scp']].forEach(([s,id])=>{
+      const c=getCov(s),el=document.getElementById(id);
+      if(el) el.textContent=`${c.done}/${c.total} · ${c.pct}%`;
+    });
+    
+    const cOpEl=document.getElementById('op');
+    if(cOpEl) animNum('op', op);
+  } catch(e) { console.error('Update failed:', e); }
+}
+
+function rOv(){
+  updAll();
+  const today=tk();const th=S.hours[today]||{math:0,phys:0,chem:0};
+  const sliders=document.getElementById('hsl');
+  sliders.innerHTML=[['math','Mathematics','var(--m)'],['phys','Physics','var(--p)'],['chem','Chemistry','var(--c)']].map(([sub,lbl,col])=>`
+    <div style="display:flex;align-items:center;gap:9px;padding:14px 12px;background:var(--color-background-secondary);border-radius:7px">
+      <span style="font-size:15px;color:rgba(45,106,79,0.7);width:110px;flex-shrink:0;font-weight:500">${lbl}</span>
+      <input type="range" min="0" max="100" step="1" value="${th[sub]||0}" style="flex:1;accent-color:${col}" data-sub="${sub}" class="hsl-r">
+      <span style="font-size:13px;font-weight:500;color:var(--color-text-primary);min-width:28px;text-align:right" id="hv-${sub}">${th[sub]||0}</span>
+    </div>`).join('');
+  sliders.querySelectorAll('.hsl-r').forEach(el=>{
+    el.addEventListener('input',e=>{
+      const sub=e.target.dataset.sub,val=parseInt(e.target.value);
+      const k=tk();S.hours[k]={...(S.hours[k]||{math:0,phys:0,chem:0}),[sub]:val};
+      document.getElementById('hv-'+sub).textContent=val;
+      const h2=S.hours[k];const tot=((h2.math||0)+(h2.phys||0)+(h2.chem||0));
+      const thEl = document.getElementById('th');
+      if(thEl) thEl.textContent = tot;
+      const tc=document.getElementById('today-cell');
+      if(tc){
+        const op=tot===0?0:tot<15?.2:tot<30?.4:tot<50?.6:tot<75?.8:1;
+        tc.style.background=tot>0?`rgba(1,62,55,${op})`:'var(--color-background-secondary)';
+        tc.style.color=op>.5?'#fff':'var(--color-text-secondary)';
+        const tip = `Today: ${tot} attempted`;
+        tc.setAttribute('data-tip', tip);
+        tc.title = tip;
+      }
+      save();
+    });
+  });
+  const hm=document.getElementById('hmap');hm.innerHTML='';
+  const sprintStart = new Date();
+  for(let i=0;i<25;i++){
+    const d=new Date(sprintStart);
+    d.setDate(d.getDate()+i);
+    const k=d.toISOString().split('T')[0];const h2=S.hours[k]||{};
+    const tot=(h2.math||0)+(h2.phys||0)+(h2.chem||0);
+    const op=tot===0?0:tot<15?.2:tot<30?.4:tot<50?.6:tot<75?.8:1;
+    const cell=document.createElement('div');
+    cell.className='heat-cell';
+    if(k===tk())cell.id='today-cell';
+    cell.style.background=tot>0?`rgba(1,62,55,${op})`:'var(--color-background-secondary)';
+    cell.style.borderColor=k===tk()?'var(--a)':'transparent';
+    cell.style.color=op>.5?'#fff':'var(--color-text-secondary)';
+    const tip = `${d.toLocaleDateString('en',{month:'short',day:'numeric'})}: ${tot} attempted`;
+    cell.setAttribute('data-tip', tip);
+    cell.title = tip; // Keep as fallback
+    cell.textContent=d.getDate();
+    hm.appendChild(cell);
+  }
+}
+
+function rSy(){
+  updAll();
+  const colors={math:'var(--m)',phys:'var(--p)',chem:'var(--c)'};
+  const bgs={math:'var(--mb)',phys:'var(--pb)',chem:'var(--cb)'};
+  const topics=SYL[asub];const col=colors[asub];const cov=getCov(asub);
+  const tl=document.getElementById('tlist');tl.innerHTML='';
+  const header=document.createElement('div');
+  header.innerHTML=`<div style="display:flex;justify-content:space-between;font-size:14px;color:var(--color-text-secondary);margin-bottom:8px"><span>${cov.done}/${cov.total} topics done</span><span style="color:${col};font-weight:700">${cov.pct}%</span></div><div class="prog-bar" style="margin-bottom:14px;margin-top:0"><div class="prog-fill" style="background:${col};width:${cov.pct}%"></div></div><div style="display:flex;gap:12px;font-size:12px;color:var(--color-text-secondary);margin-bottom:12px;flex-wrap:wrap"><span>✓ tap checkbox = done</span><span style="color:var(--c)">⚠ = weak</span><span style="color:var(--m)">↻ = revision</span></div>`;
+  tl.appendChild(header);
+  topics.forEach(t=>{
+    const isDone=S.done.has(t.id);const tag=S.tags[t.id];
+    const row=document.createElement('div');
+    row.className='topic-row';
+    if(isDone)row.style.background=bgs[asub];
+    row.innerHTML=`<div class="chk" style="background:${isDone?col:'transparent'};border-color:${isDone?col:'var(--color-border-secondary)'}">${isDone?`<svg width="11" height="11" viewBox="0 0 11 11"><path d="M2 5.5L4.5 8L9 3" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}</div><span style="flex:1;font-size:15px;${isDone?'color:var(--color-text-secondary);text-decoration:line-through':''}">${t.n}</span><button class="tag-btn weak${tag==='weak'?' on':''}" data-id="${t.id}" data-tag="weak" onclick="event.stopPropagation()"><svg style="width:12px;height:12px" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></button><button class="tag-btn rev${tag==='revision'?' on':''}" data-id="${t.id}" data-tag="revision" onclick="event.stopPropagation()"><svg style="width:12px;height:12px" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg></button>`;
+    row.onclick=()=>{const id=t.id;S.done.has(id)?S.done.delete(id):S.done.add(id);save();rSy();};
+    tl.appendChild(row);
+  });
+  tl.querySelectorAll('.tag-btn').forEach(el=>{
+    el.addEventListener('click',e=>{const id=e.currentTarget.dataset.id,tag=e.currentTarget.dataset.tag;S.tags[id]=S.tags[id]===tag?null:tag;save();rSy();});
+  });
+}
+
+function rMk(){
+  const M=S.mocks;
+  document.getElementById('mc1').textContent=M.length;
+  if(M.length>0){
+    document.getElementById('mc2').textContent=Math.round(M.reduce((a,x)=>a+x.total,0)/M.length)+'/300';
+    document.getElementById('mc3').textContent=Math.max(...M.map(x=>x.total))+'/300';
+    document.getElementById('mc4').textContent=M[M.length-1].total+'/300';
+  }else{document.getElementById('mc2').textContent=document.getElementById('mc3').textContent=document.getElementById('mc4').textContent='–';}
+  const cc=document.getElementById('chartc');
+  if(M.length>0&&typeof Chart!=='undefined'){
+    cc.style.display='';
+    if(mchart)mchart.destroy();
+    const gc='rgba(128,128,128,0.12)';
+    mchart=new Chart(document.getElementById('chart-canvas'),{type:'line',data:{labels:Array.from({length:20},(_,i)=>'#'+(i+1)),datasets:[
+      {label:'Total',data:M.map(x=>x.total),borderColor:'var(--m)',borderWidth:3,tension:.3,pointRadius:6,pointBackgroundColor:'var(--m)',pointBorderColor:'#fff',pointBorderWidth:2,fill:false},
+      {label:'Math',data:M.map(x=>x.math),borderColor:'rgba(45,106,79,0.4)',borderWidth:1.5,tension:.3,pointRadius:2,fill:false,borderDash:[4,4]},
+      {label:'Physics',data:M.map(x=>x.phys),borderColor:'rgba(45,106,79,0.3)',borderWidth:1.5,tension:.3,pointRadius:2,fill:false,borderDash:[4,4]},
+      {label:'Chemistry',data:M.map(x=>x.chem),borderColor:'rgba(45,106,79,0.2)',borderWidth:1.5,tension:.3,pointRadius:2,fill:false,borderDash:[4,4]},
+    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+ctx.parsed.y}}},scales:{x:{grid:{display:false},ticks:{color:'var(--color-text-secondary)',font:{size:10}}},y:{min:0,max:300,grid:{color:gc},ticks:{color:'var(--color-text-secondary)',font:{size:11}}}}}});
+  }else cc.style.display='none';
+  const mh=document.getElementById('mhist');
+  if(!M.length){mh.innerHTML='<div style="text-align:center;padding:20px;color:var(--color-text-secondary);font-size:12px">No tests yet — add your first score above!</div>';return;}
+  mh.innerHTML='';
+  [...M].reverse().forEach((m,ri)=>{
+    const i=M.length-1-ri;const row=document.createElement('div');row.className='mock-row';
+    const pct=Math.round(m.total/300*100);
+    row.innerHTML=`<span style="font-size:12px;color:var(--color-text-secondary);min-width:30px">#${i+1}</span><span style="color:rgba(45,106,79,0.7);flex:1;text-align:center;font-size:14px">Math: <strong style="color:var(--m)">${m.math}</strong></span><span style="color:rgba(45,106,79,0.7);flex:1;text-align:center;font-size:14px">Physics: <strong style="color:var(--p)">${m.phys}</strong></span><span style="color:rgba(45,106,79,0.7);flex:1;text-align:center;font-size:14px">Chem: <strong style="color:var(--c)">${m.chem}</strong></span><span style="font-weight:700;min-width:65px;text-align:right;color:var(--a)">${m.total}/300</span><span style="min-width:42px;text-align:right;font-size:12px;font-weight:600;color:var(--color-text-secondary)">${pct}%</span><button class="del-btn" data-i="${i}">✕</button>`;
+    mh.appendChild(row);
+  });
+  mh.querySelectorAll('.del-btn').forEach(btn=>{btn.addEventListener('click',e=>{S.mocks.splice(parseInt(e.currentTarget.dataset.i),1);save();rMk();});});
+}
+
+async function init(){
+  if (isInit) return;
+  isInit = true;
+  console.log('Dashboard Initializing...');
+
+  // Start Auth Check
+  await checkUser();
+  
+  document.querySelectorAll('.tab-btn').forEach(btn=>{
+    btn.addEventListener('mouseenter',()=>gsap.to(btn,{scale:1.02,duration:0.2,ease:"power1.out"}));
+    btn.addEventListener('mouseleave',()=>gsap.to(btn,{scale:1,duration:0.2,ease:"power1.out"}));
+    btn.addEventListener('click',e=>{
+      const newTab = e.currentTarget.dataset.tab;
+      if(newTab === atab) return;
+      const old = document.getElementById('p'+atab);
+      const target = document.getElementById('p'+newTab);
+      const btns = document.querySelectorAll('.tab-btn');
+      btns.forEach(b=>b.classList.remove('active'));
+      e.currentTarget.classList.add('active');
+      gsap.to(old, {opacity: 0, y: 15, duration: 0.2, onComplete: () => {
+        old.style.display = 'none';
+        atab = newTab;
+        target.style.display = '';
+        gsap.fromTo(target, {opacity: 0, y: -15}, {opacity: 1, y: 0, duration: 0.4, ease: "power2.out"});
+        render();
+      }});
+    });
+  });
+  document.querySelectorAll('.s-tab').forEach(tab=>{
+    tab.addEventListener('click',e=>{
+      asub=e.currentTarget.dataset.s;
+      document.querySelectorAll('.s-tab').forEach(t=>{t.style.borderColor='var(--color-border-tertiary)';t.style.color='var(--color-text-secondary)';t.style.background='rgba(1,62,55,0.04)';});
+      const col=COLORS[asub];const bg={math:'var(--mb)',phys:'var(--pb)',chem:'var(--cb)'}[asub];
+      e.currentTarget.style.borderColor=col;e.currentTarget.style.color=col;e.currentTarget.style.background=bg;
+      const tlist = document.getElementById('tlist');
+      gsap.to(tlist, {opacity:0, x:-5, duration:0.15, onComplete:()=>{
+        rSy();
+        gsap.fromTo(tlist, {opacity: 0, x:5}, {opacity:1, x:0, duration:0.25, ease:"power2.out"});
+      }});
+    });
+  });
+  const amb = document.getElementById('amb');
+  if(amb){
+    amb.addEventListener('mouseenter',()=>gsap.to(amb,{scale:1.03,duration:0.2}));
+    amb.addEventListener('mouseleave',()=>gsap.to(amb,{scale:1,duration:0.2}));
+    amb.addEventListener('click',()=>{
+      const m=+document.getElementById('im').value||0,p=+document.getElementById('ip').value||0,c=+document.getElementById('ic').value||0;
+      if(!m&&!p&&!c)return;
+      S.mocks.push({date:tk(),math:m,phys:p,chem:c,total:m+p+c});
+      document.getElementById('im').value=document.getElementById('ip').value=document.getElementById('ic').value='';
+      document.getElementById('tp').textContent='0';
+      save();rMk();
+      gsap.from("#mhist .mock-row:first-child", {x:-20, opacity:0, duration:0.5, ease:"back.out"});
+    });
+  }
+  ['im','ip','ic'].forEach(id=>{document.getElementById(id).addEventListener('input',()=>{const m=+document.getElementById('im').value||0,p=+document.getElementById('ip').value||0,c=+document.getElementById('ic').value||0;document.getElementById('tp').textContent=m+p+c;});});
+
+  // Data loading is handled by checkUser -> updateAuthState -> load
+}
+function render(){if(atab==='ov')rOv();else if(atab==='sy')rSy();else rMk();}
+
+function appReady(){runIntro(); animEnt();}
+// Fallback if chart library is extremely slow or missing
+setTimeout(()=>{if(document.getElementById('intro-overlay')){runIntro();}},2500);
+</script>

@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg:         #f7f9f4;   /* page background        */
+  --card:       #ffffff;   /* card/form surface       */
+  --card2:      #f0f5ef;   /* secondary card surface  */
+  --border:     #c8dfc8;   /* borders and dividers    */
+  --border2:    #a8c8a8;   /* hover/focus borders     */
+  --text:       #1a4a2e;   /* primary headings        */
+  --text2:      #2d5a3d;   /* secondary text          */
+  --muted:      #4a7a5a;   /* labels, captions        */
+  --muted2:     #6a9a7a;   /* placeholders, hints     */
+  --accent:     #2d6a4f;   /* buttons, links, active  */
+  --accent-h:   #1a4a2e;   /* button hover state      */
+  --accent-bg:  #e8f5e9;   /* accent tinted background*/
+  --danger:     #c0392b;   /* error states            */
+  --warning:    #d4850a;   /* warning states          */
+  --success:    #2d6a4f;   /* success states          */
+
+  /* Subject accent colors — keep these unchanged */
+  --math:       #d97706;   /* amber  for mathematics  */
+  --phys:       #0891b2;   /* cyan   for physics      */
+  --chem:       #db2777;   /* pink   for chemistry    */
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-dm), sans-serif;
+  min-height: 100vh;
+}
+
+@font-face {
+  font-family: 'Countryside';
+  src: url('/font/Countryside Personal Use.ttf') format('truetype');
+  font-display: swap;
+  font-weight: normal;
+}
+
+.glass-card {
+  @apply bg-card border border-[var(--border)] rounded-2xl overflow-hidden shadow-[0_2px_12px_rgba(26,74,46,.08)] transition-all;
+}
+
+.prog-bar {
+  @apply h-1.5 bg-black/5 rounded-full overflow-hidden;
+}
+
+.prog-fill {
+  @apply h-full transition-all duration-700 ease-out;
+}
+/* FIXED: Removed entrance animation classes for faster feel (Cleanup) */
+
+/* Custom styles for activity map cells */
+.heat-cell {
+  @apply w-12 h-12 rounded-lg flex items-center justify-center text-sm font-semibold transition-all duration-300;
+}
+
+/* Scrollbar Styles */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { 
+  background: var(--border2); 
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
+}
+
+/* Premium Input Styling */
+input, textarea {
+  @apply transition-all duration-200 outline-none;
+}
+
+.input-premium {
+  @apply w-full bg-[var(--card)] border-[1.5px] border-[var(--border)] rounded-2xl 
+         text-[var(--text)] placeholder:text-[var(--muted2)] font-semibold
+         shadow-[inset_0_2px_4px_rgba(26,74,46,0.02)]
+         focus:border-[var(--accent)] focus:bg-white focus:ring-4 focus:ring-[var(--accent)] focus:ring-opacity-20;
+}
+
+textarea.input-premium {
+  @apply resize-none leading-relaxed;
+}
