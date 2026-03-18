@@ -1,4 +1,4 @@
-// File: X:\GitHub\for_her\src\app\admin\layout.jsx
+// File: X:\GitHub\SAAS_1_Eye.Ai\src\app\admin\layout.jsx
 import * as entry from '../../../../src/app/admin/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
